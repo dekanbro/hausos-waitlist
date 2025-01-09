@@ -29,6 +29,21 @@ export async function POST(req: Request) {
       );
     }
 
+    // Check for existing email
+    const existingRecords = await base('signups')
+      .select({
+        filterByFormula: `Email = '${email}'`,
+        maxRecords: 1,
+      })
+      .firstPage();
+
+    if (existingRecords.length > 0) {
+      return NextResponse.json(
+        { error: 'This email is already registered' },
+        { status: 400 }
+      );
+    }
+
     // Add debug logging
     console.log('Attempting to create record with:');
     console.log('Base ID:', baseId);
