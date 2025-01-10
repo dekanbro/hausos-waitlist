@@ -3,9 +3,9 @@ import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Brain, Users, Castle } from 'lucide-react'
-import { DiscIcon as Discord, Twitter, Share2 } from 'lucide-react'
+import { DiscIcon as Discord, X, Share2, VolumeX, Volume2 } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 function Footer() {
   return (
@@ -16,9 +16,9 @@ function Footer() {
             <p className="text-sm"></p>
           </div>
           <div className="flex space-x-6">
-            <SocialLink href="https://discord.gg/hausos" icon={<Discord size={20} />} label="Discord" />
-            <SocialLink href="https://twitter.com/hausos" icon={<Twitter size={20} />} label="Twitter" />
-            <SocialLink href="https://warpcast.com/hausos" icon={<Share2 size={20} />} label="Warpcast" />
+            <SocialLink href="https://discord.gg/ABy26DdgfK" icon={<Discord size={20} />} label="Discord" />
+            <SocialLink href="https://twitter.com/daohaus" icon={<X size={20} />} label="X" />
+            <SocialLink href="https://warpcast.com/daohaus" icon={<Share2 size={20} />} label="Warpcast" />
           </div>
         </div>
       </div>
@@ -97,22 +97,42 @@ function EmailForm() {
 }
 
 export default function Home() {
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Video Hero Section */}
 <section className="relative h-screen">
   <video
+    ref={videoRef}
     className="absolute inset-0 w-full h-full object-cover"
     autoPlay
     loop
     muted
     playsInline
-    poster="/video-poster.jpg"
   >
-    <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hausos_fin-REYbAz43ZVKw3GtJqn16AZYHgKVsJO.mp4" type="video/mp4" />
+    <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hausos_fin2-eOuo9DTI9WkB2LKEE3xDXren4uPKfy.mp4" type="video/mp4" />
     Your browser does not support the video tag.
   </video>
-  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-end text-center p-4 pb-8 sm:pb-16 md:pb-24">
+  <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-end text-center p-4 pb-8 sm:pb-16 md:pb-24">
+  <div className="absolute top-4 right-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleMute}
+              aria-label={isMuted ? "Unmute video" : "Mute video"}
+            >
+              {isMuted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
+            </Button>
+          </div>
     <div className="flex flex-col items-center mb-4 sm:mb-8">
 
       <p className="text-lg sm:text-xl md:text-2xl px-4 sm:px-0">The Future of Decentralized Organization Intelligence</p>
