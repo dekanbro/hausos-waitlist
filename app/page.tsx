@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Brain, Users, Castle } from 'lucide-react'
-import { DiscIcon as Discord, X, Share2, VolumeX, Volume2 } from 'lucide-react'
+import { DiscIcon as Discord, X, VolumeX, Volume2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState, useRef } from 'react';
 
@@ -18,11 +18,22 @@ function Footer() {
           <div className="flex space-x-6">
             <SocialLink href="https://discord.gg/ABy26DdgfK" icon={<Discord size={20} />} label="Discord" />
             <SocialLink href="https://twitter.com/daohaus" icon={<X size={20} />} label="X" />
-            <SocialLink href="https://warpcast.com/daohaus" icon={<Share2 size={20} />} label="Warpcast" />
+            <SocialLink href="https://warpcast.com/~/channel/farcastle" icon={<WIcon size={20} />} label="Warpcast" />
           </div>
         </div>
       </div>
     </footer>
+  )
+}
+
+function WIcon({ size = 20 }: { size?: number }) {
+  return (
+    <div 
+      style={{ width: size, height: size }} 
+      className="flex items-center justify-center font-bold"
+    >
+      W
+    </div>
   )
 }
 
