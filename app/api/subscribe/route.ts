@@ -19,8 +19,7 @@ export async function POST(req: Request) {
     }
 
     const base = new Airtable({ apiKey }).base(baseId);
-
-    const { email } = await req.json();
+    const { email, handle, warpcastHandle, topic, type = 'waitlist' } = await req.json();
 
     if (!email) {
       return NextResponse.json(
@@ -29,8 +28,15 @@ export async function POST(req: Request) {
       );
     }
 
+    if (type === 'speaker' && !topic) {
+      return NextResponse.json(
+        { error: 'Topic is required for speaker registration' },
+        { status: 400 }
+      );
+    }
+
     // Check for existing email
-    const existingRecords = await base('signups')
+    const existingRecords = await base('waitlist')
       .select({
         filterByFormula: `Email = '${email}'`,
         maxRecords: 1,
@@ -44,17 +50,15 @@ export async function POST(req: Request) {
       );
     }
 
-    // Add debug logging
-    console.log('Attempting to create record with:');
-    console.log('Base ID:', baseId);
-    console.log('API Key (first 10 chars):', apiKey.substring(0, 10) + '...');
-    console.log('Email:', email);
-    console.log('Table name: signups');
-
-    const result = await base('signups').create([
+    // Create record with all fields
+    const result = await base('waitlist').create([
       {
         fields: {
           Email: email,
+          Handle: handle,
+          WarpcastHandle: warpcastHandle,
+          Topic: topic || '',  // Empty string if not provided
+          Type: type,
           SignupDate: new Date().toISOString()
         }
       }
@@ -63,7 +67,7 @@ export async function POST(req: Request) {
     console.log('Airtable response:', result);
 
     return NextResponse.json(
-      { message: 'Successfully subscribed' },
+      { message: type === 'speaker' ? 'Successfully registered as speaker' : 'Successfully subscribed' },
       { status: 200 }
     );
   } catch (error) {
